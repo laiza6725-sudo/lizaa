@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <title>FoodTracker</title>
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="app-container">
+        <div class="header">
+            <h1>🥗 FoodTracker</h1>
+            <p>Учет питания и витаминов</p>
+        </div>
+
+        <div class="tab-container">
+            <button class="tab active" data-tab="add">Добавить</button>
+            <button class="tab" data-tab="recipes">Рецепты</button>
+            <button class="tab" data-tab="stats">Статистика</button>
+            <button class="tab" data-tab="analysis">Анализ</button>
+        </div>
+
+        <div id="add-tab" class="tab-content active">
+            <div class="card">
+                <h2>Добавить рецепт</h2>
+                <div class="input-group">
+                    <label>Название рецепта</label>
+                    <input type="text" id="recipeName" placeholder="Например: Гречневая каша с овощами">
+                </div>
+                
+                <div class="input-group">
+                    <label>Категория</label>
+                    <select id="category">
+                        <option value="breakfast">Завтрак</option>
+                        <option value="lunch">Обед</option>
+                        <option value="dinner">Ужин</option>
+                        <option value="snack">Перекус</option>
+                        <option value="dessert">Десерт</option>
+                    </select>
+                </div>
+
+                <div class="input-group">
+                    <label>Фото рецепта</label>
+                    <div class="image-upload" id="imageUpload">
+                        <p>📷 Нажмите, чтобы добавить фото</p>
+                        <img id="imagePreview" class="image-preview" alt="Предпросмотр">
+                    </div>
+                    <input type="file" id="imageInput" accept="image/*" capture="environment" style="display: none;">
+                    <div class="photo-options">
+                        <button type="button" class="photo-btn" id="cameraBtn">
+                            <span class="camera-icon">📷</span> Сделать фото
+                        </button>
+                        <button type="button" class="photo-btn" id="galleryBtn">
+                            <span class="gallery-icon">🖼️</span> Выбрать из галереи
+                        </button>
+                    </div>
+                </div>
+
+                <div class="input-group">
+                    <label>Ингредиенты (укажите цену за 100г/мл)</label>
+                    <div id="ingredients">
+                        <div class="ingredient-row">
+                            <input type="text" placeholder="Продукт" class="ingredient-name">
+                            <input type="number" placeholder="Количество" class="ingredient-amount" value="100">
+                            <select class="ingredient-unit">
+                                <option value="g">г</option>
+                                <option value="ml">мл</option>
+                                <option value="tsp">ч.л.</option>
+                                <option value="tbsp">ст.л.</option>
+                                <option value="cup">стакан</option>
+                                <option value="piece">шт.</option>
+                            </select>
+                            <input type="number" placeholder="Цена за 100г/мл" class="ingredient-price" step="0.01" min="0">
+                        </div>
+                    </div>
+                    <button type="button" id="addIngredientBtn" style="background: #34c759; margin-top: 10px;">+ Добавить ингредиент</button>
+                </div>
+
+                <div class="input-group">
+                    <label>Способ приготовления</label>
+                    <textarea id="instructions" placeholder="Опишите шаги приготовления блюда..."></textarea>
+                </div>
+
+                <button type="button" id="saveRecipeBtn">Сохранить рецепт</button>
+            </div>
+        </div>
+
+        <div id="recipes-tab" class="tab-content">
+            <div class="card">
+                <h2>Мои рецепты</h2>
+                <div id="recipesList" class="recipes-grid">
+                    <!-- Плитки рецептов будут здесь -->
+                </div>
+            </div>
+        </div>
+
+        <div id="stats-tab" class="tab-content">
+            <div class="card">
+                <h2>Статистика питания</h2>
+                <div class="stats">
+                    <div class="stat-card">
+                        <div class="stat-value" id="totalCalories">0</div>
+                        <div>Калории</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-value" id="totalIron">0</div>
+                        <div>Железо (мг)</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-value" id="totalProtein">0</div>
+                        <div>Белок (г)</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-value" id="totalCarbs">0</div>
+                        <div>Углеводы (г)</div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="card">
+                <h2>Продукты в базе</h2>
+                <p>Используйте эти названия при добавлении ингредиентов:</p>
+                <ul id="foodList" style="margin-top: 10px; padding-left: 20px;">
+                    <!-- Список будет заполнен JavaScript -->
+                </ul>
+            </div>
+        </div>
+
+        <div id="analysis-tab" class="tab-content">
+            <div class="card">
+                <h2>Анализ полезности рецептов</h2>
+                <p>Выберите рецепт для анализа его питательной ценности:</p>
+                
+                <div class="input-group">
+                    <label>Рецепт для анализа</label>
+                    <select id="analysisRecipe">
+                        <option value="">-- Выберите рецепт --</option>
+                    </select>
+                </div>
+                
+                <div id="analysisResult" class="analysis-result" style="display: none;">
+                    <div class="health-score">
+                        <div id="scoreCircle" class="score-circle">0</div>
+                        <div>
+                            <h3 id="healthRating">Оценка полезности</h3>
+                            <p id="healthDescription">Описание оценки</p>
+                        </div>
+                    </div>
+                    
+                    <div class="recipe-rating-stars">
+                        <h4>Оценка полезности:</h4>
+                        <div id="starRating" class="stars" style="font-size: 24px; text-align: center; margin: 10px 0;"></div>
+                    </div>
+                    
+                    <h4>Соотношение БЖУ:</h4>
+                    <div class="macro-bar">
+                        <div id="proteinBar" class="macro-fill protein-fill" style="width: 0%"></div>
+                    </div>
+                    <div class="macro-labels">
+                        <span>Белки: <span id="proteinPercent">0%</span></span>
+                        <span id="proteinWeight">0г</span>
+                    </div>
+                    
+                    <div class="macro-bar">
+                        <div id="fatBar" class="macro-fill fat-fill" style="width: 0%"></div>
+                    </div>
+                    <div class="macro-labels">
+                        <span>Жиры: <span id="fatPercent">0%</span></span>
+                        <span id="fatWeight">0г</span>
+                    </div>
+                    
+                    <div class="macro-bar">
+                        <div id="carbsBar" class="macro-fill carbs-fill" style="width: 0%"></div>
+                    </div>
+                    <div class="macro-labels">
+                        <span>Углеводы: <span id="carbsPercent">0%</span></span>
+                        <span id="carbsWeight">0г</span>
+                    </div>
+                    
+                    <div class="recommendations">
+                        <h4>Рекомендации:</h4>
+                        <div id="recommendationsList"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Модальное окно для просмотра рецепта -->
+        <div id="recipeModal" class="modal">
+            <div class="modal-content">
+                <span class="close-modal" id="closeModalBtn">&times;</span>
+                <div id="modalContent">
+                    <!-- Содержимое будет заполнено JavaScript -->
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
